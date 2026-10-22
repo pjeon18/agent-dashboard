@@ -4,7 +4,7 @@ import { Logo, Score, fmt, pay, when } from '../lib/ui'
 
 type Step = 'read' | 'passed' | 'claude' | 'strong'
 
-export function Road({ data }: { data: Data }) {
+export function RadarRoad({ data }: { data: Data }) {
   const [step, setStep] = useState<Step>('strong')
   const [r1, r2] = data.runs
   const c = data.compare
@@ -122,7 +122,7 @@ function RolePanel({ data, role }: { data: Data; role: Role | null }) {
       </div>
       {role.reasons.length > 0 && <><h5>Why it fits</h5><ul>{role.reasons.map(x => <li key={x}>{x}</li>)}</ul></>}
       {role.gaps.length > 0 && <><h5>Gaps</h5><ul>{role.gaps.map(x => <li key={x}>{x}</li>)}</ul></>}
-      {role.quote && <blockquote>“{role.quote}”{role.grounded ? <span className="check">Quote found in the posting</span> : <span className="check bad">Quote not found in the posting</span>}</blockquote>}
+      {role.quote && <blockquote>“{role.quote}”{role.grounded ? <span className="qcheck">Quote found in the posting</span> : <span className="qcheck bad">Quote not found in the posting</span>}</blockquote>}
       <a className="open" href={role.url} target="_blank" rel="noreferrer">Open the posting ↗</a>
     </aside>
   )
