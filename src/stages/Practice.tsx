@@ -24,7 +24,7 @@ export function Practice({ agent }: { agent: Agent }) {
         {p.note && <p className="aside">{p.note}</p>}
       </section>
 
-      <section className="card">
+      {p.rows.length > 0 && <section className="card">
       <table className="lessons">
         <thead><tr>{p.columns.map(c => <th key={c}>{c}</th>)}</tr></thead>
         <tbody>
@@ -37,7 +37,7 @@ export function Practice({ agent }: { agent: Agent }) {
           ))}
         </tbody>
       </table>
-      </section>
+      </section>}
     </div>
   )
 }

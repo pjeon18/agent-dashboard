@@ -39,7 +39,7 @@ export function capabilityAgent(d: CapData): Agent {
         facts: d.solvents.map(s => [s.name, `boils at ${s.bp.toFixed(0)} °C, safe to ${s.ceiling.toFixed(0)} °C`] as [string, string]),
       },
       engine: { value: 'Not run yet', caption: 'no AI model has been tested', unknown: true, headline: 'The driver’s seat is empty' },
-      instructor: { value: 'None', caption: 'release gates decide afterwards', unknown: true, headline: 'Nobody steps in during a run' },
+      instructor: { value: 'None', caption: 'release gates decide afterwards', headline: 'Nobody steps in during a run' },
       memory: { value: 'Earlier rounds', caption: 'it sees every result so far', headline: 'After each round it sees the yields it got', facts: [['Sees', 'its own past experiments and yields'], ['Never sees', 'the true best yield, or why a run aborted beyond a fault message']] },
       destination: { value: 'Highest yield', caption: `within ${d.budget} experiments` },
     },

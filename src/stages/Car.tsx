@@ -52,7 +52,7 @@ function GenericDetail({ name, slot }: { name: string; slot: Slot }) {
   return (
     <>
       <h2 className="headline">{slot.headline ?? `${name}: ${slot.value}`}</h2>
-      {slot.unknown && <p className="unknown-note">{slot.caption}. This part is empty or can't be seen from outside.</p>}
+      {slot.unknown && <p className="unknown-note">{slot.caption ? `${slot.caption}. ` : ''}Nobody has said. It's one of the questions to ask the maker.</p>}
       {slot.facts && (
         <table className="facts">
           <tbody>{slot.facts.map(([k, v]) => <tr key={k}><td>{k}</td><td>{v}</td></tr>)}</tbody>
@@ -63,7 +63,8 @@ function GenericDetail({ name, slot }: { name: string; slot: Slot }) {
 }
 
 /** Fixed route: one line through set stops. Agent-picked: a branching path. */
-export function RouteGlyph({ kind }: { kind: 'fixed' | 'agent' }) {
+export function RouteGlyph({ kind }: { kind: 'fixed' | 'agent' | 'unknown' }) {
+  if (kind === 'unknown') return <svg className="rglyph" viewBox="0 0 120 56" aria-hidden><path d="M8 28 H112" strokeDasharray="4 7" /><text x="60" y="20" textAnchor="middle" className="rq">?</text></svg>
   return (
     <svg className="rglyph" viewBox="0 0 120 56" aria-hidden>
       {kind === 'fixed' ? (

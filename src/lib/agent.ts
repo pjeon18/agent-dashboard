@@ -28,7 +28,7 @@ export type Agent = {
   name: string
   line: string
   /** Who picks the route: the builder wrote every step, or the agent decides each next step. */
-  route: { kind: 'fixed' | 'agent'; value: string; caption: string }
+  route: { kind: 'fixed' | 'agent' | 'unknown'; value: string; caption: string }
   /** The overview row shown above every stage. */
   kpis: {
     cost: { value: string; caption: string; unknown?: boolean }
