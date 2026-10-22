@@ -1,15 +1,15 @@
 import type { Agent } from '../lib/agent'
 import type { Data } from '../lib/types'
-import { fmt } from '../lib/ui'
+import { fmt, when } from '../lib/ui'
 import { Dots, Hist, Misses } from '../lib/viz'
 import { RadarRoad } from './RadarRoad'
 import { DestinationDetail, EngineDetail, MapDetail, RulesDetail, YouDetail } from './radarDetails'
 
 export function radarAgent(data: Data): Agent {
   const first = data.runs[0]
+  const latest = data.runs[data.runs.length - 1]
   const droppedFirst = Object.values(first.dropped_by).reduce((a, b) => a + b, 0)
   const remembered = Object.values(data.dropped).reduce((a, d) => a + d.total, 0) + data.kept.length
-  const strong = data.kept.filter(k => k.scorer === 'llm' && (k.score ?? 0) >= 4).length
   const c = data.compare
   const m = data.modelCheck
   const at = (s: number) => c.shift[String(s)] ?? 0
@@ -23,7 +23,7 @@ export function radarAgent(data: Data): Agent {
     route: { kind: 'fixed', value: 'You wrote every step', caption: 'Fetch, filter, score, hand off. The same order every trip.' },
     kpis: {
       cost: { value: `$${c.cost.toFixed(2)}`, caption: `Claude re-reading ${c.scored} roles. Regular trips cost $0` },
-      run: { value: `${fmt(first.postings_fetched)} → ${strong}`, caption: "postings to strong matches" },
+      run: { label: 'Latest trip', value: `${fmt(latest.new_postings)} new`, caption: `${when(latest.start)} · ${fmt(latest.passed_filter)} kept, ${fmt(latest.strong_new)} strong` },
       tests: { value: '3 of 4', caption: 'checks taken' },
     },
     parts: {
@@ -34,7 +34,7 @@ export function radarAgent(data: Data): Agent {
       memory: {
         value: fmt(remembered), caption: 'postings remembered, so repeats cost nothing',
         headline: `It remembers all ${fmt(remembered)} postings it has seen`,
-        facts: [['Stored', `${fmt(remembered)} postings, with why each was kept or dropped`], ['New on the second trip', `${data.runs[1].new_postings}`], ['Reposts', 'scored once, score copied to the twins']],
+        facts: [['Stored', `${fmt(remembered)} postings, with why each was kept or dropped`], ['Trips so far', `${data.runs.length}`], ['Reposts', 'scored once, score copied to the twins']],
       },
       destination: { value: 'Your profile', caption: 'every score is measured against it' },
     },

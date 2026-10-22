@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import type { Data, Role } from '../lib/types'
+import type { Data, Role, Run } from '../lib/types'
 import { Logo, Score, fmt, pay, when } from '../lib/ui'
 
 type Step = 'read' | 'passed' | 'claude' | 'strong'
 
 export function RadarRoad({ data }: { data: Data }) {
   const [step, setStep] = useState<Step>('strong')
-  const [r1, r2] = data.runs
+  const [r1] = data.runs
   const c = data.compare
   const strong = data.kept.filter(k => k.scorer === 'llm' && (k.score ?? 0) >= 4)
   const [role, setRole] = useState<Role | null>(strong[0] ?? null)
@@ -46,8 +46,9 @@ export function RadarRoad({ data }: { data: Data }) {
         <h3 className="section-title">Trips so far</h3>
         <table className="trip-table">
           <tbody>
-            <tr><td className="tw">{when(r1.start)}</td><td>Read {fmt(r1.postings_fetched)} postings, kept {fmt(r1.passed_filter)} with free checks. Scored by keywords; no API key yet.</td><td className="tc">$0</td></tr>
-            <tr><td className="tw">{when(r2.start)}</td><td>{r2.new_postings} new postings since the last trip. Both dropped by the free checks.</td><td className="tc">$0</td></tr>
+            {[...data.runs].reverse().map(r => (
+              <tr key={r.id}><td className="tw">{when(r.start)}</td><td>{tripLine(r)}</td><td className="tc">{r.llm_scored ? `${fmt(r.tokens.input + r.tokens.output)} tokens` : '$0'}</td></tr>
+            ))}
             <tr><td className="tw">Oct 20</td><td>Claude re-read the top {c.scored}. {fmt(c.tokensIn)} tokens in, {fmt(c.tokensOut)} out.</td><td className="tc">${c.cost.toFixed(2)}</td></tr>
           </tbody>
         </table>
@@ -145,4 +146,11 @@ function ClaudeTable({ data }: { data: Data }) {
       </tbody>
     </table>
   )
+}
+
+/** One plain sentence per trip, built from the radar's own run stats. */
+function tripLine(r: Run) {
+  if (r.passed_filter === 0) return `${fmt(r.new_postings)} new ${r.new_postings === 1 ? 'posting' : 'postings'}. ${r.new_postings ? 'All dropped by the free checks.' : ''}`
+  const scored = r.llm_scored ? `${fmt(r.llm_scored)} scored by Claude` : 'scored by keywords (no API key yet)'
+  return `${fmt(r.new_postings)} new postings, ${fmt(r.passed_filter)} kept by the free checks, ${scored}, ${fmt(r.strong_new)} strong.`
 }

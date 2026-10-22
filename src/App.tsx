@@ -75,7 +75,7 @@ export default function App({ radar, cc, cap }: { radar: Data; cc: CCData; cap: 
             <span className="kpi-cap">{agent.kpis.cost.caption}</span>
           </div>
           <div className={`kpi ${agent.kpis.run.unknown ? 'unknown' : ''}`}>
-            <span className="kpi-label">Latest run</span>
+            <span className="kpi-label">{agent.kpis.run.label ?? 'Latest run'}</span>
             <span className="kpi-value">{agent.kpis.run.value}</span>
             <span className="kpi-cap">{agent.kpis.run.caption}</span>
           </div>

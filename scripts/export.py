@@ -11,6 +11,7 @@ source line is kept next to it.
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 import sqlite3
@@ -19,7 +20,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-AGENTS = ROOT.parent / "agents"
+# The radar checkout. CI points this at its own workspace (see the radar's job-radar.yml).
+AGENTS = Path(os.environ.get("AGENTS_DIR") or ROOT.parent / "agents")
 OUT = ROOT / "public" / "radar.json"
 LOGOS_OUT = ROOT / "public" / "logos"
 

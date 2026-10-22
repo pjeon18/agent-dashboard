@@ -32,7 +32,7 @@ export type Agent = {
   /** The overview row shown above every stage. */
   kpis: {
     cost: { value: string; caption: string; unknown?: boolean }
-    run: { value: string; caption: string; unknown?: boolean }
+    run: { label?: string; value: string; caption: string; unknown?: boolean }
     tests: { value: string; caption: string; unknown?: boolean }
   }
   parts: Record<PartId, Slot>
